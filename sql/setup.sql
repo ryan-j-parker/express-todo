@@ -13,5 +13,8 @@ CREATE TABLE users (
 
 CREATE TABLE items (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  
-)
+  user_id BIGINT,
+  description VARCHAR NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
