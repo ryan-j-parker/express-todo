@@ -3,7 +3,6 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
-const Item = require('../lib/models/Item');
 
 const mockUser = {
   email: 'email@sweet.net',
