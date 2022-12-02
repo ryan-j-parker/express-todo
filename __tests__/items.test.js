@@ -16,6 +16,5 @@ describe('items', () => {
   it('GET /api/v1/items should retrieve a list of items', async () => {
     const res = await request(app).get('/api/v1/items');
     expect(res.status).toBe(200);
-  })
-
   });
+});
