@@ -3,6 +3,7 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
+const Item = require('../models/Item');
 
 const mockUser = {
   email: 'email@sweet.net',
@@ -15,6 +16,13 @@ const mockItem = {
   description: 'go to the gym',
   urgency: 5,
   completed: false,
+};
+
+const existingUser = {
+  email: 'jimotheena@whargarbl.skynet',
+  password: 'possw0rdican',
+  firstName: 'Heyy',
+  lastName: 'Mulliganman',
 };
 
 const registerAndLogin = async (userProps = {}) => {
@@ -49,7 +57,10 @@ describe('items', () => {
   it('POST /api/v1/items should add a new item', async () => {
     const [agent, user] = await registerAndLogin();
 
+    await agent.post('/api/v1/users/sessions').send(existingUser);
+
     const res = await agent.post('/api/v1/items').send(mockItem);
+
     expect(res.status).toEqual(200);
     expect(res.body).toEqual({
       id: expect.any(String),
@@ -57,6 +68,22 @@ describe('items', () => {
       urgency: mockItem.urgency,
       completed: mockItem.completed,
       user_id: user.id,
+    });
+  });
+
+  it('PUT /api/v1/items/1 should update the item with ID #1', async () => {
+    const agent = await request.agent(app);
+    await (await agent.post('/api/v1/users/sessions')).send(existingUser);
+
+    const item = await Item.update(mockItem);
+    const res = await agent.put(`/api/v1/items/${item.id}`).send({
+      description: 'new description',
+      urgency: 5,
+    });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      ...item,
     });
   });
 });
